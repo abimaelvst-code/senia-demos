@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SENIA · Demo para Joyerías</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8C96A;
+    --gold-pale: #F5E7C0;
+    --dark: #0D0B08;
+    --dark2: #1A1610;
+    --dark3: #252018;
+    --text: #EDE8DC;
+    --text-muted: #9A9080;
+    --accent: #C9A84C;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── GRAIN OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: .4;
+  }
+
+  section { position: relative; z-index: 1; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 40px 24px 60px;
+    background: radial-gradient(ellipse 80% 60% at 50% 30%, #2a2010 0%, var(--dark) 70%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0; right: 0;
+    height: 80px;
+    background: linear-gradient(to bottom, transparent, var(--dark));
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid rgba(201,168,76,0.4);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 32px;
+    animation: fadeUp .8s ease both;
+  }
+
+  .hero-badge span { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); animation: pulse 2s infinite; }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 7vw, 48px);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    animation: fadeUp .8s .1s ease both;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+
+  .hero p {
+    font-size: 19px;
+    color: var(--text-muted);
+    max-width: 360px;
+    margin: 0 auto 36px;
+    animation: fadeUp .8s .2s ease both;
+  }
+
+  .hero-cta {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: var(--dark);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    letter-spacing: .04em;
+    padding: 14px 32px;
+    border-radius: 100px;
+    text-decoration: none;
+    animation: fadeUp .8s .3s ease both;
+    box-shadow: 0 8px 32px rgba(201,168,76,0.3);
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    animation: fadeIn 1s 1s ease both;
+  }
+
+  .scroll-hint::after {
+    content: '';
+    width: 1px;
+    height: 28px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollLine 1.5s ease infinite;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 24px;
+    margin: 8px 0;
+  }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: rgba(201,168,76,0.15); }
+  .divider-icon { color: var(--gold); font-size: 16px; opacity: .6; }
+
+  /* ── PROBLEMS ── */
+  .section {
+    padding: 60px 24px;
+  }
+
+  .section-label {
+    font-size: 10px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(22px, 5.5vw, 34px);
+    font-weight: 600;
+    line-height: 1.25;
+    margin-bottom: 8px;
+  }
+
+  .section-sub {
+    color: var(--text-muted);
+    font-size: 17px;
+    margin-bottom: 32px;
+  }
+
+  .problem-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .problem-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: var(--dark2);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 16px 18px;
+  }
+
+  .problem-item .icon {
+    font-size: 20px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .problem-item p {
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+
+  .problem-item p strong {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 2px;
+    color: var(--gold-pale);
+  }
+
+  /* ── SOLUTION CARDS ── */
+  .feature-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .feature-card {
+    background: linear-gradient(135deg, var(--dark2) 0%, var(--dark3) 100%);
+    border: 1px solid rgba(201,168,76,0.18);
+    border-radius: 18px;
+    padding: 22px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: .4;
+  }
+
+  .feature-card .emoji {
+    font-size: 26px;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .feature-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--gold-pale);
+  }
+
+  .feature-card p {
+    font-size: 16px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .feature-card .tag {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 100px;
+    padding: 3px 10px;
+  }
+
+  /* ── WHO BENEFITS ── */
+  .roles {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .role-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--dark2);
+    border-radius: 14px;
+    padding: 16px 18px;
+    border-left: 3px solid var(--gold);
+  }
+
+  .role-icon { font-size: 28px; flex-shrink: 0; }
+
+  .role-card h4 {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gold-pale);
+    margin-bottom: 3px;
+  }
+
+  .role-card p {
+    font-size: 16px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  /* ── DEMO SECTION ── */
+  .demo-section {
+    background: linear-gradient(180deg, var(--dark) 0%, #1a1508 50%, var(--dark) 100%);
+    padding: 60px 24px;
+  }
+
+  .demo-intro {
+    background: linear-gradient(135deg, rgba(201,168,76,0.12), rgba(201,168,76,0.04));
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 18px;
+    padding: 22px 20px;
+    margin-bottom: 28px;
+    text-align: center;
+  }
+
+  .demo-intro p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+
+  .demo-intro strong { color: var(--gold-light); }
+
+  .demo-group {
+    margin-bottom: 28px;
+  }
+
+  .demo-group-title {
+    font-size: 11px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .demo-group-title::after { content: ''; flex: 1; height: 1px; background: rgba(201,168,76,0.15); }
+
+  .demo-questions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .demo-q {
+    background: var(--dark2);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    position: relative;
+    transition: border-color .2s, background .2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .demo-q:active, .demo-q.copied {
+    background: rgba(201,168,76,0.1);
+    border-color: rgba(201,168,76,0.4);
+  }
+
+  .demo-q p {
+    font-size: 17px;
+    line-height: 1.55;
+    padding-right: 36px;
+    color: var(--text);
+  }
+
+  .demo-q .copy-icon {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: var(--text-muted);
+    transition: color .2s;
+  }
+
+  .demo-q.copied .copy-icon { color: var(--gold); }
+
+  .copy-toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--gold);
+    color: var(--dark);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 10px 20px;
+    border-radius: 100px;
+    opacity: 0;
+    transition: all .3s;
+    z-index: 999;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .copy-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ── RESULTS ── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .stat-card {
+    background: var(--dark2);
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 14px;
+    padding: 18px 14px;
+    text-align: center;
+  }
+
+  .stat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--gold);
+    display: block;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-label {
+    font-size: 15px;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+
+  /* ── CTA FINAL ── */
+  .cta-section {
+    padding: 60px 24px 80px;
+    text-align: center;
+    background: radial-gradient(ellipse 80% 50% at 50% 100%, #2a2010 0%, var(--dark) 70%);
+  }
+
+  .cta-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(24px, 6vw, 38px);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  .cta-section p {
+    color: var(--text-muted);
+    font-size: 17px;
+    margin-bottom: 32px;
+    max-width: 340px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .cta-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: #25D366;
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    padding: 16px 32px;
+    border-radius: 100px;
+    text-decoration: none;
+    max-width: 300px;
+    margin: 0 auto 16px;
+    box-shadow: 0 8px 28px rgba(37,211,102,0.3);
+  }
+
+  .cta-btn svg { width: 20px; height: 20px; fill: currentColor; }
+
+  .cta-note {
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 24px;
+    text-align: center;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  footer p { font-size: 14px; color: var(--text-muted); letter-spacing: .05em; }
+  footer strong { color: var(--gold); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: .5; transform: scale(.8); }
+  }
+
+  @keyframes scrollLine {
+    0% { opacity: 0; transform: scaleY(0); transform-origin: top; }
+    50% { opacity: 1; transform: scaleY(1); transform-origin: top; }
+    100% { opacity: 0; transform: scaleY(1); transform-origin: bottom; }
+  }
+
+  /* ── DEMO WA BUTTON ── */
+  .demo-wa-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: #25D366;
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 17px;
+    padding: 18px 32px;
+    border-radius: 100px;
+    text-decoration: none;
+    margin: 0 auto 32px;
+    box-shadow: 0 8px 28px rgba(37,211,102,0.35);
+    max-width: 340px;
+  }
+  .demo-wa-btn svg { width: 22px; height: 22px; fill: currentColor; flex-shrink: 0; }
+
+  /* ── KEY CARD ── */
+  .key-card {
+    background: linear-gradient(135deg, rgba(201,168,76,0.12), rgba(201,168,76,0.04));
+    border: 1px solid rgba(201,168,76,0.35);
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .key-card .key-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+  .key-card p { font-size: 16px; line-height: 1.55; color: var(--text); }
+  .key-card p strong { color: var(--gold-light); display: block; margin-bottom: 4px; font-size: 17px; }
+  .key-badge {
+    display: inline-block;
+    background: rgba(201,168,76,0.2);
+    border: 1px solid rgba(201,168,76,0.5);
+    color: var(--gold-light);
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    padding: 4px 14px;
+    border-radius: 8px;
+    margin-top: 8px;
+    font-family: monospace;
+  }
+
+  /* ── REVEAL ON SCROLL ── */
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════ HERO ══════════ -->
+<section class="hero">
+  <div class="hero-badge"><span></span> Demo exclusivo · Joyerías</div>
+  <h1>¿Tu negocio<br>trabajando <em>solo</em><br>para ti?</h1>
+  <p>Descubre cómo las joyerías más exitosas están multiplicando sus ventas con un asistente de inteligencia artificial</p>
+  <a href="#demo" class="hero-cta">Ver cómo funciona ↓</a>
+  <div class="scroll-hint">desliza</div>
+</section>
+
+<!-- ══════════ PROBLEMAS ══════════ -->
+<div class="divider"><span class="divider-icon">◆</span></div>
+<section class="section reveal">
+  <span class="section-label">¿Te suena familiar?</span>
+  <h2 class="section-title">Los dolores de cabeza de cada día</h2>
+  <p class="section-sub">Si tienes vendedoras y joyería en consignación, seguro has vivido esto:</p>
+
+  <ul class="problem-list">
+    <li class="problem-item">
+      <span class="icon">📱</span>
+      <p><strong>Mensajes sin responder</strong>Una clienta pregunta por precio o disponibilidad a las 10pm y nadie le contesta. Se va con la competencia.</p>
+    </li>
+    <li class="problem-item">
+      <span class="icon">😩</span>
+      <p><strong>Vendedora estresada</strong>Le piden una pieza específica y tiene que ir hasta la joyería o preguntar por WhatsApp — con respuesta tardía o sin respuesta. Y tus empleadas invierten mucho tiempo buscando esa pieza entre todo el inventario.</p>
+    </li>
+    <li class="problem-item">
+      <span class="icon">💸</span>
+      <p><strong>Cobros que se enredan</strong>Algunas vendedoras deben de semanas pasadas y es incómodo rastrearlas una por una.</p>
+    </li>
+    <li class="problem-item">
+      <span class="icon">📊</span>
+      <p><strong>No sabes qué se vende más</strong>Al final del mes no tienes claro qué piezas rotan, cuáles se estancan ni quién vende más.</p>
+    </li>
+    <li class="problem-item">
+      <span class="icon">🔁</span>
+      <p><strong>Seguimiento manual y agotador</strong>Tú o tu equipo persiguiendo clientes, recordando pagos y coordinando todo por WhatsApp.</p>
+    </li>
+  </ul>
+</section>
+
+<!-- ══════════ SOLUCIÓN ══════════ -->
+<div class="divider"><span class="divider-icon">◆</span></div>
+<section class="section reveal">
+  <span class="section-label">La solución</span>
+  <h2 class="section-title" style="font-size: clamp(36px, 10vw, 58px); line-height:1.1; margin-bottom:16px">La <em>solución</em> que<br>tu joyería necesita</h2>
+  <p class="section-sub">No es un software genérico. Es un sistema personalizado a las necesidades de tu negocio, diseñado entendiendo exactamente cómo funciona una joyería con red de vendedoras.</p>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <span class="emoji">🤖</span>
+      <h3>Asistente que nunca descansa</h3>
+      <p>Responde preguntas de clientes y vendedoras a cualquier hora por WhatsApp — texto o nota de voz. Tú duermes, tu negocio sigue funcionando.</p>
+      <span class="tag">WhatsApp · Texto · Audio</span>
+    </div>
+
+    <div class="feature-card">
+      <span class="emoji">💍</span>
+      <h3>Vendedoras generando ventas fácilmente</h3>
+      <p>El asistente responde en menos de 2 minutos, manda imágenes de las piezas en existencia más cercanas a lo que le piden y asesora en la venta si la vendedora necesita ayuda para cerrar.</p>
+      <span class="tag">Respuesta inmediata · Imágenes · Asesoría</span>
+    </div>
+
+    <div class="feature-card">
+      <span class="emoji">💰</span>
+      <h3>Cobros automáticos y sin tensión</h3>
+      <p>El sistema avisa a tus vendedoras cuando hay un pago pendiente. Nada de perseguir a nadie. Los recordatorios los manda él solito.</p>
+      <span class="tag">Cuentas por cobrar</span>
+    </div>
+
+    <div class="feature-card">
+      <span class="emoji">📈</span>
+      <h3>¿Quieres saber cómo va tu negocio?</h3>
+      <p>Con un solo mensaje de audio o texto pregunta lo que quieras — ventas, cobros, inventario, quién vende más — y tu asistente ejecutiva 24/7 te resuelve al instante.</p>
+      <span class="tag">Asistente ejecutiva · 24/7 · Voz o texto</span>
+    </div>
+
+    <div class="feature-card">
+      <span class="emoji">👥</span>
+      <h3>CRM de clientes y vendedoras</h3>
+      <p>Historial completo: quién compró qué, cuándo, cuánto lleva gastado, qué le gusta. Ideal para dar seguimiento personalizado.</p>
+      <span class="tag">Clientes · Vendedoras</span>
+    </div>
+
+    <div class="feature-card">
+      <span class="emoji">🛒</span>
+      <h3>Tienda en línea integrada</h3>
+      <p>Aprovecha otro canal de venta sin depender de las vendedoras — vende de contado con pago directo en tu tienda en línea, las 24 horas.</p>
+      <span class="tag">E-commerce · Pago directo</span>
+    </div>
+
+    <div class="feature-card">
+      <span class="emoji">💎</span>
+      <h3>Ayuda a vender más a tus vendedoras</h3>
+      <p>La tienda en línea también sirve como apoyo para tus vendedoras: tienen acceso a más diseños y modelos aparte de lo que traigan en existencia, y pueden compartir el link con sus clientes para ampliar sus ventas.</p>
+      <span class="tag">Más opciones · Más ventas</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ ¿PARA QUIÉN? ══════════ -->
+<div class="divider"><span class="divider-icon">◆</span></div>
+<section class="section reveal">
+  <span class="section-label">¿Para quién es?</span>
+  <h2 class="section-title">Todos en tu negocio<br>se benefician</h2>
+
+  <div class="roles">
+    <div class="role-card">
+      <span class="role-icon">👑</span>
+      <div>
+        <h4>Tú, el dueño o dueña</h4>
+        <p>Control total desde el teléfono. Ves todo sin tener que preguntar. Sabes exactamente cómo va tu negocio en tiempo real.</p>
+      </div>
+    </div>
+    <div class="role-card">
+      <span class="role-icon">💼</span>
+      <div>
+        <h4>Tus vendedoras</h4>
+        <p>Atención inmediata y asistencia las 24 horas del día. Más modelos que mostrar gracias a la tienda en línea — comparten su link con clientes y cobran comisión por cada compra. Además reciben notificaciones importantes en tiempo real.</p>
+      </div>
+    </div>
+    <div class="role-card">
+      <span class="role-icon">💁‍♀️</span>
+      <div>
+        <h4>Tus clientas</h4>
+        <p>Preguntan por WhatsApp y reciben respuesta inmediata, a cualquier hora. Catálogo, precios, disponibilidad. Sin esperar.</p>
+      </div>
+    </div>
+    <div class="role-card">
+      <span class="role-icon">🧑‍💼</span>
+      <div>
+        <h4>Tu equipo de trabajo</h4>
+        <p>Menos carga y presión. Se dedicarán únicamente a atender en mostrador y a las tareas que solo un humano puede hacer — el sistema se encarga del resto.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ DEMO ══════════ -->
+<div class="divider"><span class="divider-icon">◆</span></div>
+<section class="demo-section reveal" id="demo">
+  <span class="section-label">Experiencia en vivo</span>
+  <h2 class="section-title" style="margin-bottom:12px">Prueba el asistente<br><em>ahora mismo</em></h2>
+
+  <div class="demo-intro">
+    <p>📌 <strong>Esto es un demo con datos ficticios</strong> de una joyería de ejemplo. Todo lo que ves aquí es cómo quedaría configurado con la información real de tu negocio.</p>
+  </div>
+
+  <a href="https://wa.me/5213313511265?text=Hola%20Claudia%2C%20quiero%20ver%20el%20cat%C3%A1logo%20de%20joyer%C3%ADa" class="demo-wa-btn">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    Dale clic aquí para comenzar el demo
+  </a>
+
+  <div class="demo-intro" style="margin-bottom:20px">
+    <p>
+      💬 <strong>¿Cómo usarlo?</strong> Una vez en WhatsApp, escríbele a <strong>Claudia</strong> como si fuera una persona real — por texto o nota de voz. Puedes hacerle preguntas como:
+    </p>
+    <ul style="margin-top:14px; padding-left:4px; list-style:none; display:flex; flex-direction:column; gap:10px;">
+      <li style="font-size:16px; color:var(--text);">👗 <strong style="color:var(--gold-light)">Clienta de la tienda</strong> — pregunta por joyas, precios, disponibilidad o cómo hacer un pedido</li>
+      <li style="font-size:16px; color:var(--text);">💼 <strong style="color:var(--gold-light)">Vendedora</strong> — pregúntale cosas como: <em>"¿Tienes un dije de cruz con piedritas?"</em> o <em>"¿Ya les llegaron las arracadas facetadas?"</em></li>
+      <li style="font-size:16px; color:var(--text);">🙋 <strong style="color:var(--gold-light)">Persona interesada en vender</strong> — pregunta cómo unirte al equipo de vendedoras</li>
+    </ul>
+    <p style="margin-top:16px; font-size:16px; color:var(--text);">Si algo no te queda claro, díselo — Claudia te lo explicará de otra manera. Puedes hablarle con total naturalidad.</p>
+  </div>
+
+  <!-- Acceso Ejecutivo -->
+  <div class="key-card">
+    <span class="key-icon">🔑</span>
+    <p>
+      <strong>¿Eres dueño o dueña? Prueba el acceso ejecutivo</strong>
+      Después de chatear un poco, escribe la siguiente contraseña en el chat para activar el modo exclusivo del dueño. Desde ahí puedes preguntar lo que quieras sobre ventas, pagos atrasados, inventario o cualquier información del negocio:
+      <span class="key-badge">JOYERIA2024</span>
+    </p>
+  </div>
+
+</section>
+
+<!-- ══════════ RESULTADOS ══════════ -->
+<div class="divider"><span class="divider-icon">◆</span></div>
+<section class="section reveal">
+  <span class="section-label">Resultados esperados</span>
+  <h2 class="section-title">Lo que cambia en<br>tu joyería</h2>
+  <p class="section-sub">Esto es lo que puedes esperar cuando lo implementes en tu negocio:</p>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <span class="stat-number">100%</span>
+      <span class="stat-label">Clientes atendidos en menos de 2 minutos</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-number">+80%</span>
+      <span class="stat-label">Más ventas en conjunto con tienda en línea</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-number">−15%</span>
+      <span class="stat-label">Menos cuentas por cobrar atrasadas</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-number">0 hrs</span>
+      <span class="stat-label">Tiempo tuyo en tareas repetitivas</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ CTA FINAL ══════════ -->
+<section class="cta-section reveal">
+  <h2>¿Listo para verlo<br>en tu joyería?</h2>
+  <p>Aclara cualquier duda en unos minutos con un diagnóstico gratis</p>
+
+  <p style="font-family:'Playfair Display',serif; font-style:italic; font-size:clamp(17px,4.5vw,22px); color:var(--gold-light); max-width:360px; margin:0 auto 32px; line-height:1.5;">
+    "No somos un proveedor, sino un socio estratégico a largo plazo con la misión de crecer tu negocio."
+  </p>
+
+  <a href="https://wa.me/5213329271030?text=Hola%2C%20quisiera%20un%20diagn%C3%B3stico%20gratis%20para%20mi%20joyería" class="cta-btn" id="whatsapp-btn">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    Quiero un diagnóstico gratis
+  </a>
+  <p class="cta-note">Respuesta en menos de 2 minutos · 24/7</p>
+</section>
+
+<footer>
+  <p>Presentado por <strong>SENIA</strong> · Soluciones con Inteligencia Artificial<br>senia.tech</p>
+</footer>
+
+<div class="copy-toast" id="toast">¡Copiado! Pégalo en WhatsApp 💬</div>
+
+<script>
+  // Copy to clipboard
+  function copyQ(el) {
+    const text = el.querySelector('p').textContent.trim();
+    navigator.clipboard.writeText(text).then(() => {
+      el.classList.add('copied');
+      showToast();
+      setTimeout(() => el.classList.remove('copied'), 1500);
+    }).catch(() => {
+      // Fallback
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      el.classList.add('copied');
+      showToast();
+      setTimeout(() => el.classList.remove('copied'), 1500);
+    });
+  }
+
+  function showToast() {
+    const t = document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+  }
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(r => obs.observe(r));
+
+  // WhatsApp button - update with real number
+  // document.getElementById('whatsapp-btn').href = 'https://wa.me/52TUNUMERO?text=...';
+</script>
+</body>
+</html>
